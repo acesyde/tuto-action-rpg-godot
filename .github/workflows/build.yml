@@ -3,13 +3,16 @@ name: Build Godot Project
 on:
   push: {}
   pull_request: {}
+  release:
+    types:
+      - created  
 
 jobs:
   Godot:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [linux]
+        platform: [linux, windows, mac]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -22,6 +25,7 @@ jobs:
           preset: ${{ matrix.platform }}
           debugMode: "false"
       - name: Upload Artifact
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: actions/upload-artifact@v2
         with:
           name: Client - ${{ matrix.platform }}
